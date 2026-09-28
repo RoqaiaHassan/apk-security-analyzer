@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معمل التشفير (Cryptography Lab) - Android Analyzer Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved" style="font-size:1.6rem;"></i>
+            <div>
+                <div>MOBILE SECURITY & PRIVACY</div>
+                <div class="brand-title">Android Analyzer Pro (محلل الأمن والتشفير)</div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="landing.html" class="nav-item"><i class="fa-solid fa-house"></i> الرئيسية (Home)</a>
+            <a href="index.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> لوحة التحليل (Dashboard)</a>
+            <a href="history.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> سجل الفحوصات والمقارنة</a>
+            <a href="crypto_lab.html" class="nav-item active"><i class="fa-solid fa-flask"></i> معمل التشفير (Crypto Lab)</a>
+        </div>
+    </nav>
+
+    <div style="margin:30px; display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <!-- Classical Cipher Lab -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fa-solid fa-key"></i> Classical Cryptography Lab</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <label>اختر الخوارزمية الكلاسيكية:</label>
+                <select id="classCipherSelect" class="file-path-input">
+                    <option value="caesar">Caesar Cipher (شفرة قيصر)</option>
+                    <option value="vigenere">Vigenere Cipher (شفرة فيجينير)</option>
+                    <option value="monoalphabetic">Monoalphabetic Substitution (الاستبدال الأحادي)</option>
+                </select>
+
+                <label>النص المدخل (Plaintext):</label>
+                <textarea id="classInputText" class="file-path-input" rows="3" placeholder="أدخل النص للتشفير أو فك التشفير...">Hello Mobile Security Class 2026</textarea>
+
+                <label>المفتاح / مقدار الإزاحة (Key / Shift):</label>
+                <input type="text" id="classKeyInput" class="file-path-input" value="3">
+
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="runClassical('encrypt')" class="btn-primary" style="flex:1;"><i class="fa-solid fa-lock"></i> تشفير Encrypt</button>
+                    <button onclick="runClassical('decrypt')" class="btn-success" style="flex:1;"><i class="fa-solid fa-lock-open"></i> فك التشفير Decrypt</button>
+                </div>
+
+                <div style="margin-top:15px; background:#050811; padding:12px; border-radius:6px; border:1px solid #1e293b;">
+                    <div style="color:var(--accent-cyan); font-weight:bold; margin-bottom:5px;">النتيجة (Output):</div>
+                    <pre id="classOutput" style="color:#00e676; font-family:monospace; white-space:pre-wrap;">-</pre>
+                    <div id="classExplanation" style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modern Cipher & Hash Lab -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fa-solid fa-microchip"></i> Modern Cryptography & Hash Lab</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <label>اختر الخوارزمية الحديثة / التجزئة:</label>
+                <select id="modernCipherSelect" class="file-path-input">
+                    <option value="aes">AES Encryption (AES-128)</option>
+                    <option value="des3">Triple DES (3DES/CBC)</option>
+                    <option value="hash">Hash Functions (MD5 / SHA1 / SHA256 / SHA512)</option>
+                </select>
+
+                <label>النص المدخل (Plaintext):</label>
+                <textarea id="modernInputText" class="file-path-input" rows="3" placeholder="أدخل النص...">SecretDataPayload2026</textarea>
+
+                <label>المفتاح أو نمط التشفير / نوع الهاش:</label>
+                <input type="text" id="modernKeyInput" class="file-path-input" value="secret123" placeholder="المفتاح أو نوع الهاش مثل SHA-256">
+
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="runModern('encrypt')" class="btn-primary" style="flex:1;"><i class="fa-solid fa-lock"></i> تشفير Encrypt</button>
+                    <button onclick="runModern('decrypt')" class="btn-success" style="flex:1;"><i class="fa-solid fa-lock-open"></i> فك التشفير Decrypt</button>
+                </div>
+
+                <div style="margin-top:15px; background:#050811; padding:12px; border-radius:6px; border:1px solid #1e293b;">
+                    <div style="color:var(--accent-cyan); font-weight:bold; margin-bottom:5px;">النتيجة (Output):</div>
+                    <pre id="modernOutput" style="color:#38bdf8; font-family:monospace; white-space:pre-wrap;">-</pre>
+                    <div id="modernExplanation" style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lastClassicalCiphertext = '';
+        let lastModernCiphertext = '';
+
+        async function runClassical(op) {
+            const cipher = document.getElementById('classCipherSelect').value;
+            const input = document.getElementById('classInputText');
+            const text = op === 'decrypt' && lastClassicalCiphertext ? lastClassicalCiphertext : input.value;
+            const key = document.getElementById('classKeyInput').value;
+
+            try {
+                const res = await fetch('/api/crypto-lab/classical', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ cipher, text, key, operation: op })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'فشل تنفيذ العملية');
+                if (op === 'encrypt') lastClassicalCiphertext = data.output;
+                document.getElementById('classOutput').innerText = data.output || data.detail;
+                document.getElementById('classExplanation').innerText = data.explanation || '';
+            } catch (error) {
+                document.getElementById('classExplanation').innerText = error.message;
+            }
+        }
+
+        async function runModern(op) {
+            const cipher = document.getElementById('modernCipherSelect').value;
+            const input = document.getElementById('modernInputText');
+            if (cipher === 'hash' && op === 'decrypt') {
+                document.getElementById('modernExplanation').innerText = 'الهاش عملية أحادية الاتجاه ولا يمكن فكّه.';
+                return;
+            }
+            const text = op === 'decrypt' && lastModernCiphertext ? lastModernCiphertext : input.value;
+            const keyOrAlgo = document.getElementById('modernKeyInput').value;
+
+            const payload = { cipher, text, operation: op };
+            if (cipher === 'hash') {
+                payload.algo = keyOrAlgo || 'SHA-256';
+            } else {
+                payload.key = keyOrAlgo || 'secret123';
+                payload.mode = 'ECB';
+            }
+
+            try {
+                const res = await fetch('/api/crypto-lab/modern', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({...payload, operation: op})
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'فشل تنفيذ العملية');
+                if (op === 'encrypt' && data.ciphertext_base64) lastModernCiphertext = data.ciphertext_base64;
+                document.getElementById('modernOutput').innerText = data.decrypted_plaintext || data.ciphertext_base64 || data.hash_hex || data.error;
+                document.getElementById('modernExplanation').innerText = data.explanation || (data.error || '');
+            } catch (error) {
+                document.getElementById('modernExplanation').innerText = error.message;
+            }
+        }
+    </script>
+</body>
+</html>

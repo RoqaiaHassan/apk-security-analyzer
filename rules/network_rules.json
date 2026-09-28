@@ -1,0 +1,22 @@
+[
+  {
+    "id": "RULE-013",
+    "name": "Cleartext HTTP Communication",
+    "category": "Network Security",
+    "severity": "Medium",
+    "description": "Unencrypted HTTP URL connection detected in source code or resources.",
+    "reason": "Cleartext HTTP traffic can be intercepted, inspected, or tampered with via Man-in-the-Middle (MitM) network attacks.",
+    "recommendation": "Enforce HTTPS with TLS 1.3/1.2 for all remote endpoints and configure Network Security Configuration to disallow cleartext traffic.",
+    "secure_alternative": "HTTPS / Network Security Configuration (usesCleartextTraffic=\"false\")"
+  },
+  {
+    "id": "RULE-018",
+    "name": "Trust All Certificates / SSL Bypass",
+    "category": "Network Security",
+    "severity": "Critical",
+    "description": "Custom X509TrustManager or HostnameVerifier ignoring certificate validation detected.",
+    "reason": "Bypassing certificate checks allows any MitM proxy to intercept encrypted SSL/TLS traffic.",
+    "recommendation": "Use default system certificate trust stores or implement strict SSL Pinning.",
+    "secure_alternative": "Standard Certificate Validation / Certificate Pinning"
+  }
+]

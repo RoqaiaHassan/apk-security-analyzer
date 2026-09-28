@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Security & Privacy: Android Analyzer Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid => fa-shield-halved" style="font-size:1.6rem;"></i>
+            <div>
+                <div>MOBILE SECURITY & PRIVACY</div>
+                <div class="brand-title">Android Analyzer Pro (محلل الأمن والتشفير)</div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="landing.html" class="nav-item"><i class="fa-solid fa-house"></i> الرئيسية (Home)</a>
+            <a href="index.html" class="nav-item active"><i class="fa-solid fa-chart-line"></i> لوحة التحليل (Dashboard)</a>
+            <a href="history.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> سجل الفحوصات والمقارنة</a>
+            <a href="crypto_lab.html" class="nav-item"><i class="fa-solid fa-flask"></i> معمل التشفير (Crypto Lab)</a>
+        </div>
+    </nav>
+
+    <!-- Top Action Control Bar -->
+    <div class="control-bar">
+        <div class="upload-flex">
+            <div style="color:var(--accent-cyan); font-weight:bold; white-space:nowrap;">
+                <i class="fa-solid fa-file-code"></i> APK (APK File Path) مسار ملف الـ
+            </div>
+            <div class="file-input-wrapper">
+                <input type="file" id="apkFileInput" accept=".apk" style="display:none;" onchange="handleFileSelect(event)">
+                <input type="text" id="filePathDisplay" class="file-path-input" placeholder="اختر ملف APK أو اسحبه هنا..." readonly>
+            </div>
+            <button class="btn-primary" onclick="document.getElementById('apkFileInput').click()">
+                <i class="fa-solid fa-folder-open"></i> استعراض الملفات
+            </button>
+            <button class="btn-success" id="startBtn" onclick="startAnalysis()">
+                <i class="fa-solid fa-play"></i> (START ANALYSIS) بدء الفحص الأمني
+            </button>
+        </div>
+
+        <!-- Real-time Progress Bar -->
+        <div class="progress-container">
+            <div style="font-size:0.85rem; color:var(--text-muted); font-family:monospace; min-width:220px;" id="stageStatus">
+                STATIC ANALYSIS: Ready
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <div style="font-size:0.85rem; color:var(--accent-cyan); font-weight:bold;" id="progressText">0%</div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+        <!-- Left Main Panel: Vulnerability Summary -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i class="fa-solid fa-list-check"></i> (VULNERABILITY SUMMARY) ملخص الثغرات ونتائج التحليل
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="بحث في الثغرات..." style="background:#090d16; border:1px solid #1e293b; color:#fff; padding:5px 10px; border-radius:4px;">
+                    <select id="severityFilter" onchange="filterTable()" style="background:#090d16; border:1px solid #1e293b; color:#fff; padding:5px; border-radius:4px;">
+                        <option value="ALL">جميع مستويات الخطورة</option>
+                        <option value="Critical">الحرجة (Critical)</option>
+                        <option value="High">العالية (High)</option>
+                        <option value="Medium">المتوسطة (Medium)</option>
+                        <option value="Low">المنخفضة (Low)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Vulnerabilities Summary Table -->
+            <div style="overflow-x:auto; flex:1;">
+                <table class="vuln-table" id="vulnTable">
+                    <thead>
+                        <tr>
+                            <th>مستوى الخطورة</th>
+                            <th>تفاصيل الثغرة ومكانها في الكود</th>
+                            <th>اسم الخوارزمية / المفهوم المكتشف</th>
+                            <th>Rule ID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vulnTbody">
+                        <tr>
+                            <td colspan="4" style="text-align:center; color:var(--text-muted); padding:30px;">
+                                قم برفع ملف APK والضغط على "بدء الفحص الأمني" لعرض النتائج هنا.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bottom Recommendations Panel -->
+            <div style="margin-top:20px; background:#070b14; padding:15px; border-radius:6px; border-right:4px solid var(--accent-cyan);">
+                <div style="font-weight:bold; color:var(--accent-cyan); margin-bottom:8px; display:flex; justify-content:space-between;">
+                    <span><i class="fa-solid fa-lightbulb"></i> (RECOMMENDATIONS) التوصيات والحلول العامة:</span>
+                    <button onclick="downloadReport()" class="btn-primary" style="padding:4px 12px; font-size:0.8rem;">
+                        <i class="fa-solid fa-file-pdf"></i> حفظ التقرير الشامل باللغة العربية / PDF
+                    </button>
+                </div>
+                <div style="font-size:0.85rem; color:var(--text-muted);" id="recommendationText">
+                    Remediation for Hardcoded Keys: Use Android Keystore System. Replace DES/3DES with AES-GCM. Classical algorithms are strictly prohibited in production.
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side Panel: Live Monitoring Console & Charts -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <!-- Live Monitoring Panel -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-terminal"></i> (LIVE MONITORING) المراقبة الحية والنظام
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">استخدام الصلاحيات (Permission Usage)</div>
+                <div class="chart-container">
+                    <canvas id="permChart"></canvas>
+                </div>
+
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">عمليات التشفير (Crypto Operations)</div>
+                <div class="chart-container">
+                    <canvas id="cryptoChart"></canvas>
+                </div>
+
+                <!-- Console Output -->
+                <div style="font-size:0.8rem; color:var(--accent-cyan); margin-bottom:5px; font-weight:bold;">
+                    (Console Logs) سجل النظام المباشر:
+                </div>
+                <div class="console-box" id="consoleBox">
+                    [SYSTEM] ready for analysis...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finding Details Modal -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle" style="color:var(--accent-cyan); margin-bottom:15px;"></h3>
+            <div id="modalBody" style="line-height:1.6; font-size:0.9rem;"></div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

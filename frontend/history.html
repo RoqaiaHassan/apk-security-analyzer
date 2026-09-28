@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل الفحوصات والمقارنة - Android Analyzer Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved" style="font-size:1.6rem;"></i>
+            <div>
+                <div>MOBILE SECURITY & PRIVACY</div>
+                <div class="brand-title">Android Analyzer Pro (محلل الأمن والتشفير)</div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="landing.html" class="nav-item"><i class="fa-solid fa-house"></i> الرئيسية (Home)</a>
+            <a href="index.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> لوحة التحليل (Dashboard)</a>
+            <a href="history.html" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i> سجل الفحوصات والمقارنة</a>
+            <a href="crypto_lab.html" class="nav-item"><i class="fa-solid fa-flask"></i> معمل التشفير (Crypto Lab)</a>
+        </div>
+    </nav>
+
+    <div style="margin:30px;">
+        <div class="panel-card">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i class="fa-solid fa-history"></i> سجل عمليات الفحص السابقة (Scan History)
+                </div>
+                <button onclick="compareSelectedScans()" class="btn-primary" style="padding:6px 16px;">
+                    <i class="fa-solid fa-code-compare"></i> مقارنة الفحوصات المحددة (Compare Scans)
+                </button>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="vuln-table">
+                    <thead>
+                        <tr>
+                            <th>تحديد للمقارنة</th>
+                            <th>اسم التطبيق</th>
+                            <th>اسم الملف (APK)</th>
+                            <th>تاريخ الفحص</th>
+                            <th>Security Score</th>
+                            <th>الثغرات (Critical / High / Med / Low)</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTbody">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:20px; color:var(--text-muted);">
+                                جاري تحميل السجل...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div class="modal" id="compareModal">
+        <div class="modal-content" style="width:850px;">
+            <span class="close-btn" onclick="document.getElementById('compareModal').style.display='none'">&times;</span>
+            <h3 style="color:var(--accent-cyan); margin-bottom:15px;"><i class="fa-solid fa-code-compare"></i> نتائج مقارنة الفحصين</h3>
+            <div id="compareBody" style="line-height:1.6; font-size:0.9rem;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadHistory);
+
+        async function loadHistory() {
+            try {
+                const res = await fetch('/api/history');
+                const scans = await res.json();
+                const tbody = document.getElementById('historyTbody');
+                tbody.innerHTML = '';
+
+                if (scans.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">لا يوجد فحوصات سابقة محفوظة.</td></tr>';
+                    return;
+                }
+
+                scans.forEach(s => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="checkbox" class="scan-checkbox" value="${s.id}"></td>
+                        <td style="font-weight:bold; color:var(--accent-cyan);">${s.app_name}</td>
+                        <td><code>${s.file_name}</code></td>
+                        <td>${s.created_at}</td>
+                        <td><b style="color:${s.security_score > 70 ? '#00e676' : '#ff3d00'}">${s.security_score}/100</b></td>
+                        <td>
+                            <span class="badge-sev sev-critical">${s.critical_count}</span>
+                            <span class="badge-sev sev-high">${s.high_count}</span>
+                            <span class="badge-sev sev-medium">${s.medium_count}</span>
+                            <span class="badge-sev sev-low">${s.low_count}</span>
+                        </td>
+                        <td>
+                            <button onclick="window.open('/api/report/${s.id}')" class="btn-primary" style="padding:4px 8px; font-size:0.75rem;"><i class="fa-solid fa-file-pdf"></i> report</button>
+                            <button onclick="deleteScan('${s.id}')" style="background:#dc2626; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function deleteScan(id) {
+            if (confirm("هل أنت متأكد من حذف هذا الفحص؟")) {
+                await fetch(`/api/scan/${id}`, { method: 'DELETE' });
+                loadHistory();
+            }
+        }
+
+        async function compareSelectedScans() {
+            const checked = Array.from(document.querySelectorAll('.scan-checkbox:checked')).map(cb => cb.value);
+            if (checked.length !== 2) {
+                alert("الرجاء اختيار فحصين بالضبط لمقارنتهما!");
+                return;
+            }
+
+            const res1 = await (await fetch(`/api/scan/${checked[0]}`)).json();
+            const res2 = await (await fetch(`/api/scan/${checked[1]}`)).json();
+
+            const body = document.getElementById('compareBody');
+            body.innerHTML = `
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; background:#090d16; padding:15px; border-radius:8px;">
+                    <div>
+                        <h4 style="color:#00f2fe;">الفحص الأول (${res1.app_name})</h4>
+                        <p>اسم الملف: ${res1.file_name}</p>
+                        <p>Security Score: <b style="color:${res1.security_score > 70 ? '#00e676':'#ff3d00'}">${res1.security_score}/100</b></p>
+                        <p>إجمالي الثغرات: ${res1.findings.length}</p>
+                    </div>
+                    <div>
+                        <h4 style="color:#00f2fe;">الفحص الثاني (${res2.app_name})</h4>
+                        <p>اسم الملف: ${res2.file_name}</p>
+                        <p>Security Score: <b style="color:${res2.security_score > 70 ? '#00e676':'#ff3d00'}">${res2.security_score}/100</b></p>
+                        <p>إجمالي الثغرات: ${res2.findings.length}</p>
+                    </div>
+                </div>
+                <div style="margin-top:15px; padding:10px; background:#121929; border-radius:6px; border-right:4px solid #00e676;">
+                    <b>فرق النتيجة (Delta):</b> ${res2.security_score - res1.security_score >= 0 ? '+' : ''}${res2.security_score - res1.security_score} نقطة في مستوى الأمان.
+                </div>
+            `;
+            document.getElementById('compareModal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

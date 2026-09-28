@@ -1,0 +1,42 @@
+[
+  {
+    "id": "RULE-014",
+    "name": "Dangerous Android Permission Requested",
+    "category": "Permissions",
+    "severity": "High",
+    "description": "App requests high-risk Android permissions (e.g. READ_SMS, SEND_SMS, CAMERA, READ_CONTACTS, RECORD_AUDIO, ACCESS_FINE_LOCATION).",
+    "reason": "Dangerous permissions allow access to sensitive private user data or device resources.",
+    "recommendation": "Request permissions dynamically at runtime only when strictly necessary and apply the principle of least privilege.",
+    "secure_alternative": "Runtime Permission Prompt / Least Privilege"
+  },
+  {
+    "id": "RULE-015",
+    "name": "Exported Android Component",
+    "category": "Application Configuration",
+    "severity": "Medium",
+    "description": "Activity, Service, or Receiver is exported (android:exported=\"true\") without permission protection.",
+    "reason": "Exported components can be invoked or hijacked by unauthorized third-party apps installed on the same device.",
+    "recommendation": "Set android:exported=\"false\" unless the component is intentionally part of a public API, or enforce strict custom permissions.",
+    "secure_alternative": "android:exported=\"false\""
+  },
+  {
+    "id": "RULE-016",
+    "name": "Application is Debuggable",
+    "category": "Application Configuration",
+    "severity": "High",
+    "description": "Application manifest sets `android:debuggable=\"true\"`.",
+    "reason": "Debuggable applications allow attackers to attach jdb debuggers, step through execution, dump memory, and execute arbitrary code.",
+    "recommendation": "Ensure android:debuggable=\"false\" in release builds.",
+    "secure_alternative": "android:debuggable=\"false\""
+  },
+  {
+    "id": "RULE-017",
+    "name": "Allow Backup Enabled",
+    "category": "Application Configuration",
+    "severity": "Low",
+    "description": "Application manifest enables `android:allowBackup=\"true\"`.",
+    "reason": "Enabling backup allows ADB backup commands to extract private application sandbox data without root privileges.",
+    "recommendation": "Set android:allowBackup=\"false\" or configure a custom backup rule excluding sensitive data.",
+    "secure_alternative": "android:allowBackup=\"false\""
+  }
+]

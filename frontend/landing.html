@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Security & Cryptographic Vulnerability Analyzer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+            background: radial-gradient(circle at center, rgba(0, 242, 254, 0.15) 0%, rgba(11, 15, 25, 0.95) 70%);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            line-height: 1.8;
+            margin-bottom: 35px;
+        }
+
+        .btn-launch {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: #050811;
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.4);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-launch:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 45px rgba(0, 242, 254, 0.7);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 60px 40px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 18px;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved" style="font-size:1.8rem;"></i>
+            <div>
+                <div>MOBILE SECURITY & PRIVACY</div>
+                <div class="brand-title">Android Analyzer Pro</div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="landing.html" class="nav-item active"><i class="fa-solid fa-house"></i> الرئيسية (Home)</a>
+            <a href="index.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> المنصة الرئيسية (Dashboard)</a>
+            <a href="history.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> السجل والمقارنة</a>
+            <a href="crypto_lab.html" class="nav-item"><i class="fa-solid fa-flask"></i> معمل التشفير</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <i class="fa-solid fa-shield-cat" style="font-size:4rem; color:var(--accent-cyan); margin-bottom:20px;"></i>
+        <h1 class="hero-title">Mobile Security & Cryptographic Vulnerability Analyzer</h1>
+        <p class="hero-subtitle">
+            منصة متطورة واحترافية لتحليل أمان تطبيقات Android والكشف الذكي عن الثغرات الأمنية والأنماط التشفيرية الضعيفة (Cryptographic Vulnerabilities). تجمع المنصة بين التحليل الساكن للكود ومراجعة معايير التشفير الحديثة والكلاسيكية وإصدار تقارير أمنية شاملة.
+        </p>
+        <a href="index.html" class="btn-launch">
+            <i class="fa-solid fa-rocket"></i> الدخول إلى منصة التحليل الرئيسية (Launch Platform)
+        </a>
+    </div>
+
+    <!-- Features Overview -->
+    <div style="max-width:1200px; margin:0 auto;">
+        <h2 style="text-align:center; margin-top:50px; color:#ffffff; font-size:1.8rem;">
+            <i class="fa-solid fa-star" style="color:var(--accent-cyan);"></i> مميزات وإمكانيات النظام
+        </h2>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-key"></i></div>
+                <div class="feature-title">فحص التشفير العميق (Crypto Engine)</div>
+                <div class="feature-desc">
+                    كشف استخدام الخوارزميات الضعيفة أو المتقادمة مثل AES/ECB، DES، 3DES، و RSA المفاتيح الضعيفة، وتحديد خوارزميات التجزئة المكسورة مثل MD5 و SHA-1.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <div class="feature-title">كشف الأسرار والمفاتيح (Secrets Detection)</div>
+                <div class="feature-desc">
+                    البحث الذكي عن المفاتيح السرية المدمجة (Hardcoded Encryption Keys)، وكلمات المرور، و API Keys، وتوكنات Access Tokens داخل كود التطبيق.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                <div class="feature-title">درجة الأمان الذكية (Security Score)</div>
+                <div class="feature-desc">
+                    حساب تقييم أمني دقيق من 100 بناءً على عدد وحجم الخطورة المكتشفة مع تصنيف الخطر (Critical, High, Medium, Low).
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-flask"></i></div>
+                <div class="feature-title">معمل التشفير التفاعلي (Crypto Lab)</div>
+                <div class="feature-desc">
+                    بيئة تعليمية تفاعلية لاختبار خوارزميات التشفير الكلاسيكية (Caesar, Vigenere, Monoalphabetic) والحديثة وتوليد الهاشات مع شرح تعليمي خطوة بخطوة.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                <div class="feature-title">تقارير احترافية PDF</div>
+                <div class="feature-desc">
+                    إمكانية تصدير وحفظ التقرير الأمني الشامل بصيغة PDF يحتوي على كافة نتائج التحليل والتوصيات البديلة الآمنة.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-code-compare"></i></div>
+                <div class="feature-title">سجل الفحوصات والمقارنة (History & Delta)</div>
+                <div class="feature-desc">
+                    حفظ الفحوصات السابقة في قاعدة بيانات وإمكانية إجراء مقارنة جانبية (Side-by-Side Comparison) بين أي فحصين لمتابعة تحسن الأمان.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="text-align:center; padding:30px; color:var(--text-muted); border-top:1px solid var(--card-border); margin-top:60px;">
+        <div>Mobile Security & Cryptographic Vulnerability Analyzer © 2026</div>
+        <div style="font-size:0.85rem; margin-top:5px;">مشروع التشفير والأمن السيبراني - Android Security Analyzer Pro</div>
+    </footer>
+</body>
+</html>

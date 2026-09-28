@@ -1,0 +1,102 @@
+[
+  {
+    "id": "RULE-001",
+    "name": "Hardcoded Encryption Key",
+    "category": "Cryptography",
+    "severity": "Critical",
+    "description": "Hardcoded cryptographic key detected in source code or bytecode.",
+    "reason": "Hardcoding encryption keys allows attackers to easily decompile the APK, extract the secret key, and decrypt sensitive data or forge ciphertext.",
+    "recommendation": "Use Android Keystore System or KeyStore API to securely store keys. Derive keys at runtime using PBKDF2 with salt.",
+    "secure_alternative": "Android Keystore System / KeyGenParameterSpec"
+  },
+  {
+    "id": "RULE-002",
+    "name": "AES ECB Mode Usage",
+    "category": "Cryptography",
+    "severity": "High",
+    "description": "AES cipher initialized with Electronic Codebook (ECB) mode.",
+    "reason": "ECB mode encrypts identical plaintext blocks into identical ciphertext blocks. It preserves patterns in the data and does not provide proper confidentiality.",
+    "recommendation": "Switch to an authenticated mode such as AES/GCM/NoPadding or AES/CBC with a random IV.",
+    "secure_alternative": "AES-GCM (Cipher.getInstance(\"AES/GCM/NoPadding\"))"
+  },
+  {
+    "id": "RULE-003",
+    "name": "Weak or Deprecated Cipher",
+    "category": "Cryptography",
+    "severity": "High",
+    "description": "Use of legacy/classical ciphers (Caesar, Vigenere, Monoalphabetic) detected for security operations.",
+    "reason": "Classical ciphers are easily broken using frequency analysis or brute-force attacks and offer zero security for modern applications.",
+    "recommendation": "Replace classical ciphers with standard modern cryptography like AES-256-GCM.",
+    "secure_alternative": "AES-256-GCM"
+  },
+  {
+    "id": "RULE-004",
+    "name": "DES Cipher Usage",
+    "category": "Cryptography",
+    "severity": "High",
+    "description": "Data Encryption Standard (DES) algorithm usage detected.",
+    "reason": "DES uses a tiny 56-bit key size and can be brute-forced in hours using modern hardware.",
+    "recommendation": "Migrate to AES with a key size of at least 128 bits (preferably 256 bits).",
+    "secure_alternative": "AES-256"
+  },
+  {
+    "id": "RULE-005",
+    "name": "Triple DES (3DES) Usage",
+    "category": "Cryptography",
+    "severity": "High",
+    "description": "Triple DES (3DES / DESede) cipher usage detected.",
+    "reason": "3DES has a small 64-bit block size making it vulnerable to collision attacks (Sweet32) and is deprecated by NIST.",
+    "recommendation": "Migrate from 3DES to AES-GCM.",
+    "secure_alternative": "AES-256-GCM"
+  },
+  {
+    "id": "RULE-006",
+    "name": "MD5 Hash Algorithm Usage",
+    "category": "Cryptography",
+    "severity": "Medium",
+    "description": "MD5 hash algorithm usage detected.",
+    "reason": "MD5 is cryptographically broken and vulnerable to collision attacks. It should never be used for security digests or password hashing.",
+    "recommendation": "Use SHA-256, SHA-3, or SHA-512 for cryptographic hashing. Use Argon2/BCrypt for passwords.",
+    "secure_alternative": "SHA-256 / SHA-3"
+  },
+  {
+    "id": "RULE-007",
+    "name": "SHA-1 Hash Algorithm Usage",
+    "category": "Cryptography",
+    "severity": "Medium",
+    "description": "SHA-1 hash algorithm usage detected.",
+    "reason": "SHA-1 is vulnerable to collision attacks (SHAttered attack) and is deprecated for security applications.",
+    "recommendation": "Upgrade to SHA-256 or SHA-512.",
+    "secure_alternative": "SHA-256"
+  },
+  {
+    "id": "RULE-008",
+    "name": "Weak RSA Key Size",
+    "category": "Cryptography",
+    "severity": "High",
+    "description": "RSA key size less than 2048 bits detected (e.g., 512-bit or 1024-bit RSA).",
+    "reason": "RSA keys smaller than 2048 bits can be factored using specialized computing hardware or cloud clusters.",
+    "recommendation": "Use RSA key sizes of at least 2048 bits (preferably 3072 or 4096 bits) or switch to ECC (elliptic curve cryptography).",
+    "secure_alternative": "RSA 3072+ bits / EC (secp256r1)"
+  },
+  {
+    "id": "RULE-011",
+    "name": "Hardcoded Cryptographic IV",
+    "category": "Cryptography",
+    "severity": "High",
+    "description": "Hardcoded or static Initialization Vector (IV) detected.",
+    "reason": "Reusing fixed IVs with CBC or CTR modes destroys confidentiality and allows replay or keystream reuse attacks.",
+    "recommendation": "Generate a unique, cryptographically secure random IV for every encryption operation using SecureRandom.",
+    "secure_alternative": "SecureRandom IV generation"
+  },
+  {
+    "id": "RULE-012",
+    "name": "Insecure Randomness Generator",
+    "category": "Cryptography",
+    "severity": "Medium",
+    "description": "Standard `java.util.Random` or `Math.random()` used in cryptographic context.",
+    "reason": "Standard pseudo-random number generators (PRNGs) are deterministic and predictable.",
+    "recommendation": "Use `java.security.SecureRandom` for generating nonces, IVs, keys, and tokens.",
+    "secure_alternative": "java.security.SecureRandom"
+  }
+]
